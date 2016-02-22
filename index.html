@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<head>
+	<title>Vita List</title>
+	<!-- Bootsrap -->
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!-- Bootsrap -->
+	<!-- D3 -->
+	<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+	<script type="text/javascript" src="bower_components/d3-jetpack/d3-jetpack.js"></script>
+	<!-- D3 -->
+	<!-- Mine -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<!-- Mine -->
+</head>
+<body>
+	<div class="container" style="padding-top: 1%">
+		<div class="row">
+			<div class="col-md-1 col-lg-1 col-xs-1 col-sm-1">
+			</div>
+			<div class="input-group col-md-10 col-lg-10 col-xs-10 col-sm-10">
+				<span class="input-group-btn">
+					<button id="refresh-btn" class="btn btn-danger btn-lg" type="button" title="Reset the Input Bar">
+						<span class="glyphicon glyphicon-refresh"></span>
+					</button>
+				</span>
+				<input type="text" class="form-control input-lg" placeholder="Input Activity" id="input-text">
+				<span class="input-group-btn">
+					<button id="edit-btn" class="edit-team btn-lg btn btn-success" type="button" title="Edit activity">
+						<span class="glyphicon glyphicon-edit"></span>
+					</button>
+					<button id="up-btn" class="edit-team btn-lg btn btn-default" type="button" title="Move up!">
+						<span class="glyphicon glyphicon-triangle-top"></span>
+					</button>
+					<button id="dn-btn" class="edit-team btn-lg btn btn-default" type="button" title="Move down!"> 
+						<span class="glyphicon glyphicon-triangle-bottom"></span>
+					</button>
+					<!-- <button id="done-btn" class="edit-team btn-lg btn btn-primary" type="button" title="Mark done/undone.">
+					</button> -->
+					<button id="add-btn" class="btn-lg btn btn-primary" type="button" title="Add activity!">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+				</span>
+			</div>
+		</div>
+		<div class="row" style="padding-top: 1%">
+			<!-- <div class="col-md-0 col-lg-0 col-xs-0 col-sm-1"></div> -->
+			<div class="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+				<div class="panel panel-primary">
+					<div class="panel-heading" id="U-list-title">Loading . . .</div>
+					<div class="up-table">
+						<table class="table table-hover table-bordered">
+							<tbody id="table-undone"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="col-md-0 col-lg-0 col-xs-0 col-sm-1"></div> -->
+			<!-- <div class="col-md-0 col-lg-0 col-xs-0 col-sm-1"></div> -->
+			<div class="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+				<div class="panel panel-success">
+					<div class="panel-heading" id="D-list-title">Loading . . .</div>
+					<div class="up-table">
+						<table class="table table-hover table-bordered">
+							<tbody id="table-done"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>

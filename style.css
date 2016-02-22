@@ -1,0 +1,31 @@
+/*@media screen and (device-width: 768px) {*/
+body {
+	font-size: 300%;
+}
+
+.up-table {
+	max-height: 600px;
+	overflow-y: scroll;
+}
+
+.btn-lg {
+    padding: 15px 24px;
+    font-size: 27px;
+    line-height: 2;
+    border-radius: 9px;
+}
+
+.input-lg {
+    height: 87px;
+    padding: 15px 24px;
+    font-size: 27px;
+    line-height: 2;
+    border-radius: 9px;
+}
+
+.badge-lg {
+	padding: 4.5px 10.5px;
+	font-size: 18px;
+	border-radius: 15px;
+}
+/*}*/
