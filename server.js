@@ -46,15 +46,17 @@ function resHandler(res, exterr) {
 	res.header('Access-Control-Allow-Methods', 'GET,POST');
 	res.header('Access-Control-Allow-Headers', 'Content-Type');
 	console.log(clc.cyan('[Server]') + '> ' + clc.green('call on ') + res.req.url);
-	console.log(clc.blue('  Params:' + JSON.stringify(res.req.body)))
+	console.log(clc.blue('  Params  : ') + JSON.stringify(res.req.body))
 	return function(err,data){
 		if(err && !data){
 			res.status(400).send(err);
 		}	else if(err)	{
+			console.log(clc.blue('  Returned: ') + Object.keys(data).length + ' items');
 			res.status(202).json({err:err,data:Object.keys(data).map(function(k){return data[k]})});
 		}	else if(exterr) {
 			res.status(exterr.status).send(exterr.err)
 		}	else	{
+			console.log(clc.blue('  Returned: ') + Object.keys(data).length + ' items');
 			res.status(200).json({err:err,data:Object.keys(data).map(function(k){return data[k]})});
 		}
 	};
@@ -82,13 +84,16 @@ host.use(function(req,res){
 	res.status(404).send('Forbidden')
 })
 
-var PORT = null;
+var PORT = null,
+	HOST = null;
 if(!require('./config.js')) {
 	console.log(clc.red('No Config file!'));
 }	else 	{
-	PORT = require('./config.js').PORT;
+	PORT = require('./config.js').PORT || null;
+	HOST = require('./config.js').HOST || null;
 }
 
-var HOST = host.listen(PORT,function(){
+var HOST = host.listen(PORT, HOST,function(){
+	console.log(HOST.address())
 	console.log('Server running on http://%s:%s',HOST.address().address,HOST.address().port);
 });
