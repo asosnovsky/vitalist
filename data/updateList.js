@@ -1,6 +1,7 @@
 var fs = require('fs');
 module.exports = function (ndata,callback) {
-	fs.writeFile('./data/list.json',JSON.stringify(ndata),function(err){
+	console.log('Updating list.json', __dirname)
+	fs.writeFile(__dirname+'/list.json',JSON.stringify(ndata),function(err){
 		if(!err)	{
 			callback(null);
 		}	else 	{
