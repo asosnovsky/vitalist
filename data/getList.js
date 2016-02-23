@@ -2,7 +2,7 @@ var makeList = require('./makeList.js'),
 	fs		 = require('fs');
 
 module.exports = function (callback) {
-	console.log('FUNCTION => db.add');
+	console.log('FUNCTION => db.add', __dirname);
 	fs.readFile('./data/list.json', 'utf8', function(err,data){
 		if(err && err.code === "ENOENT")	{
 			makeList(function(merr,data){
