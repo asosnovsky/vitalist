@@ -11,7 +11,7 @@ var express 	= require('express'),
 	clc 		= require('cli-color');
 
 /*Log Configuration*/
-var log_file 	= fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+var log_file 	= fs.createWriteStream(__dirname + '/logs/'+ (new Date().getTime()) +'debug.log', {flags : 'w'});
 console.log = function() {
   log_file.write(util.format.apply(null, arguments) + '\n');
   process.stdout.write(util.format.apply(null,arguments) + '\n');
