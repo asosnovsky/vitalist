@@ -48,7 +48,7 @@ function resHandler(res, exterr) {
 	console.log(clc.cyan('[Server]') + '> ' + clc.green('call on ') + res.req.url);
 	console.log(clc.blue('  Params  : ') + JSON.stringify(res.req.body))
 	return function(err,data){
-		if(err) console.log(clc.blue('  Error   : ') + err);
+		if(err) console.log(clc.blue('  Error   : ') + JSON.stringify(err));
 		if(err && !data){
 			res.status(400).send(err);
 		}	else if(err)	{
