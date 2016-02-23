@@ -102,11 +102,6 @@ $.ajax({
 					d3.select(this).select('.checker').attr('class','checker glyphicon glyphicon-new-window');
 					d3.select(this).transition().duration(500).style("font-weight","bold");
 				}).on('click',function(d){
-					// var ret = {};
-					// 	ret[d3.select(this).attr('id')] = {done:opt.status};
-					// 	// ret[d3.select(this).attr('id')] = {index: (d3.select(this.previousSibling).attr("loc"))}
-						// ret[d3.select(this.previousSibling).attr('id')] = {index: (d3.select(this).attr("loc"))}
-					
 					refresh(data.data);
 					d3.select(this).classed('active',true);					
 					$('.edit-team').show();$('#add-btn').hide();
@@ -123,12 +118,6 @@ $.ajax({
 						.attr('elem-id',(this.nextSibling?d3.select(this.nextSibling).attr("id"):"NA"))
 						.attr('elem-index',(this.nextSibling?d3.select(this.nextSibling).attr("loc"):"NA"));
 
-					// d3.select('#done-btn').html('')
-					// 	.insert('span',':first-child')
-					// 	.attr('class',('glyphicon glyphicon-')+ (opt.status?'unchecked':'check'))
-					// // d3.select('#done-btn')
-					// // 	.append('span')
-					// // 	.text(opt.status?' Mark Done':' Mark To Do')
 					$('#input-text').val(d3.select(this).select('.list-item').text())
 					
 				}).style('cursor','pointer');
@@ -137,6 +126,7 @@ $.ajax({
 			rows.exit()
 				.attr('class', 'exit')
 				.remove();
+			$('#input-text').val('');
 		};
 
 		/*Buttons*/
@@ -159,7 +149,6 @@ $.ajax({
 		$('#refresh-btn').on('click',function(){
 			$('.edit-team').hide();
 			$('#add-btn').show();
-			$('#input-text').val('');
 			refresh(data.data);
 		});
 		//Edit
@@ -179,14 +168,27 @@ $.ajax({
 
 		//Up-btn
 		$('#up-btn').on('click',function(){
-			alert("WORK IN PROGRESS!");
-			$('#refresh-btn').trigger('click');
+			if($(this).attr('elem-id') === "NA")	{
+				alert("Already at the top!");
+			}	else 	{
+				var ret = {};
+					ret[$(this).attr('elem-id')] = {index: $('#edit-btn').attr('elem-index')}
+					ret[$('#edit-btn').attr('elem-id')] = {index: $(this).attr('elem-index')}
+				console.log(ret);
+				update(ret);
+			}
 		});
 
 		//Down-btn
 		$('#dn-btn').on('click',function(){
-			alert("WORK IN PROGRESS!");
-			$('#refresh-btn').trigger('click');
+			if($(this).attr('elem-id') === "NA")	{
+				alert("Already at the bottom!");
+			}	else 	{
+				var ret = {};
+					ret[$(this).attr('elem-id')] = {index: $('#edit-btn').attr('elem-index')}
+					ret[$('#edit-btn').attr('elem-id')] = {index: $(this).attr('elem-index')}
+				update(ret);
+			}
 		});
 
 		/*Start*/
