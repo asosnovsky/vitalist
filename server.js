@@ -48,6 +48,7 @@ function resHandler(res, exterr) {
 	console.log(clc.cyan('[Server]') + '> ' + clc.green('call on ') + res.req.url);
 	console.log(clc.blue('  Params  : ') + JSON.stringify(res.req.body))
 	return function(err,data){
+		console.log(clc.red('TEST|> '), arguments);
 		if(err) console.log(clc.blue('  Error   : ') + err);
 		if(err && !data){
 			res.status(400).send(err);
@@ -95,6 +96,5 @@ if(!require('./config.js')) {
 }
 
 var HOST = host.listen(PORT, HOST,function(){
-	console.log(HOST.address())
 	console.log('Server running on http://%s:%s',HOST.address().address,HOST.address().port);
 });

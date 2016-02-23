@@ -2,6 +2,7 @@ var makeList = require('./makeList.js'),
 	fs		 = require('fs');
 
 module.exports = function (callback) {
+	console.log('FUNCTION => db.add');
 	fs.readFile('./data/list.json', 'utf8', function(err,data){
 		if(err && err.code === "ENOENT")	{
 			makeList(function(merr,data){
@@ -10,8 +11,10 @@ module.exports = function (callback) {
 				}
 			});
 		}	else if(!err) 	{
+			console.log('FUNCTION => db.add -> Success');
 			callback(null,sort(JSON.parse(data)));
 		}	else 	{
+			console.log('FUNCTION => db.add -> Error', err);
 			callback(err);
 		}
 	});
