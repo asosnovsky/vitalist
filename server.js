@@ -1,32 +1,43 @@
 //-----------------------------------------
 //	Requirements
 //-----------------------------------------
+
 /*Packages*/
 var express 	= require('express'),
 	url 		= require('url'),
-	bodyParser 	= require('body-parser');
+	bodyParser 	= require('body-parser'),
+	fs 			= require('fs'),
+	util 		= require('util'),
+	clc 		= require('cli-color');
+
+/*Log Configuration*/
+var log_file 	= fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+console.log = function() {
+  log_file.write(util.format.apply(null, arguments) + '\n');
+  process.stdout.write(util.format.apply(null,arguments) + '\n');
+};
 
 /*Modules*/
 var db 	= require('./data');
 
-/*Variables*/
-var PORT = {
-	app 	: 2121,
-	server 	: 2122
-};
+//-----------------------------------------
+//	Host
+//-----------------------------------------
+var host = express();
 
 //-----------------------------------------
 //	Apllication
 //-----------------------------------------
-var app 	= express();
-	app.use(express.static(__dirname));
+var app 	= express.Router();
+	app.use(function(req){
+		console.log(clc.white('[Client]') + '> ' + clc.green('call on ') + req.url);
+		express.static(__dirname).apply(null,arguments);
+	});
 
-app.listen(PORT.app);
-console.log('app active on', PORT.app);
 //-----------------------------------------
 //	Server
 //-----------------------------------------
-var server 	= express();
+var server 	= express.Router();
 	server.use(bodyParser.json());
 	server.use(bodyParser.urlencoded({ extended: true }));
 
@@ -34,6 +45,8 @@ function resHandler(res, exterr) {
 	res.header('Access-Control-Allow-Origin','*');
 	res.header('Access-Control-Allow-Methods', 'GET,POST');
 	res.header('Access-Control-Allow-Headers', 'Content-Type');
+	console.log(clc.cyan('[Server]') + '> ' + clc.green('call on ') + res.req.url);
+	console.log(clc.blue('  Params:' + JSON.stringify(res.req.body)))
 	return function(err,data){
 		if(err && !data){
 			res.status(400).send(err);
@@ -48,7 +61,6 @@ function resHandler(res, exterr) {
 }
 
 server.get('/get',function (req,res) {
-	console.log(req,res)
 	db.get(resHandler(res));
 }).post('/add',function (req,res) {
 	if(req.body.entry && req.body.entry.constructor === String)	{
@@ -60,5 +72,23 @@ server.get('/get',function (req,res) {
 	db.updateM(req.body, resHandler(res))
 });
 
-server.listen(PORT.server);
-console.log('server active on', PORT.server);
+//-----------------------------------------
+//	Host-Port
+//-----------------------------------------
+
+host.use('/',app);
+host.use('/db',server);
+host.use(function(req,res){
+	res.status(404).send('Forbidden')
+})
+
+var PORT = null;
+if(!require('./config.js')) {
+	console.log(clc.red('No Config file!'));
+}	else 	{
+	PORT = require('./config.js').PORT;
+}
+
+var HOST = host.listen(PORT,function(){
+	console.log('Server running on http://%s:%s',HOST.address().address,HOST.address().port);
+});

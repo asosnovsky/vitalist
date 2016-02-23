@@ -1,7 +1,4 @@
-var HOSTNAME = 'http://192.168.0.19';
-var PORT 	 = '2122';
-var URL 	 = HOSTNAME + ':' + PORT + '/';
- 
+var URL = '/db/';
 $.ajax({
 	type: "GET",
 	url: URL+ "get",
