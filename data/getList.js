@@ -20,6 +20,7 @@ module.exports = function (callback) {
 	});
 
 	function sort(dt) {
+		console.log('FUNCTION => db.add.sort');
 		var ndt = {};
 		Object.keys(dt).sort(function(a,b){
 			return dt[a].index - dt[b].index;
