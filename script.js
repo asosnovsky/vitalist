@@ -1,4 +1,5 @@
-var URL = '/db/';
+var URL = 'db/';
+
 $.ajax({
 	type: "GET",
 	url: URL+ "get",

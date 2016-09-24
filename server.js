@@ -1,3 +1,4 @@
+var HOSTPATH = '/vitalist/';
 //-----------------------------------------
 //	Requirements
 //-----------------------------------------
@@ -79,10 +80,11 @@ server.get('/get',function (req,res) {
 //	Host-Port
 //-----------------------------------------
 
-host.use('/',app);
-host.use('/db',server);
+host.use(HOSTPATH,app);
+host.use(HOSTPATH+'db',server);
 host.use(function(req,res){
-	res.status(404).send('Forbidden')
+	res.redirect(HOSTPATH);
+	//res.status(404).send('Forbidden Area, You are simply no allowed here!')
 })
 
 var PORT = null,
