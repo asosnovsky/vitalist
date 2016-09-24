@@ -3,7 +3,7 @@ module.exports = function (id, change, callback) {
 	require('./getList.js')(function(err,data){
 		if(!err){
 			if(data[id])	{
-				['text','done','index'].forEach(function(k){
+				['text','done','index','hide'].forEach(function(k){
 					if(change[k]!== undefined) {
 						data[id][k] = change[k];
 					}

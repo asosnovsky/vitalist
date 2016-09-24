@@ -31,7 +31,7 @@ var host = express();
 //-----------------------------------------
 var app 	= express.Router();
 	app.use(function(req){
-		console.log(clc.white('[Client]') + '> ' + clc.green('call on ') + req.url);
+		console.log(clc.white('[Client]') + '> ' + clc.green('call on ') + req.url, 'at ' + clc.blue(new Date()));
 		express.static(__dirname).apply(null,arguments);
 	});
 
