@@ -9,6 +9,7 @@ module.exports = function (entry,callback) {
 				index: 0,
 				id 	 : id,
 				text :entry,
+				date_added: Date.now(),
 				done :false
 			};
 			var ndata = {};

@@ -2,7 +2,7 @@ var makeList = require('./makeList.js'),
 	fs		 = require('fs');
 
 module.exports = function (callback) {
-	console.log('FUNCTION => db.add', __dirname);
+	console.log('FUNCTION => db.get', __dirname);
 	fs.readFile(__dirname + '/list.json', 'utf8', function(err,data){
 		if(err && err.code === "ENOENT")	{
 			makeList(function(merr,data){
@@ -11,25 +11,30 @@ module.exports = function (callback) {
 				}
 			});
 		}	else if(!err) 	{
-			console.log('FUNCTION => db.add -> Success');
+			console.log('FUNCTION => db.get -> Success');
 			callback(null,sort(JSON.parse(data)));
 		}	else 	{
-			console.log('FUNCTION => db.add -> Error', err);
+			console.log('FUNCTION => db.get -> Error', err);
 			callback(err);
 		}
 	});
 
 	function sort(dt) {
-		console.log('FUNCTION => db.add.sort');
+		console.log('FUNCTION => db.get.sort');
 		var ndt = {};
-		Object.keys(dt).sort(function(a,b){
+		Object.keys(dt)
+		.sort(function(a,b){
 			return dt[a].index - dt[b].index;
-		}).forEach(function(id){
+		})
+		.filter(function(id){
+			return !dt[id].hide 
+		})
+		.forEach(function(id){
 			ndt[id] = dt[id];
 		});
 		Object.keys(ndt).forEach(function(id, i){
 			ndt[id].index = i + 1;
 		});
 		return ndt;
-	}
+	};
 }

@@ -6,8 +6,16 @@ module.exports = function(changes, callback) {
 				if(data[id])	{
 					Object.keys(data[id]).forEach(function(k){
 						if(changes[id][k]!== undefined) {
-							if(k==='done') { changes[id][k] = (changes[id][k] === 'true');}
+							if(k==='done') 
+								{ 
+									changes[id][k] = (changes[id][k] === 'true');
+									if(changes[id][k])
+									{
+										changes[id].time_done = Date.now();
+									}
+								}
 							data[id][k] = changes[id][k];
+							changes[id].last_change = Date.now();
 						}
 					});
 				}	else	{errs[id] = 'No such Id';}
