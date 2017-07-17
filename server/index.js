@@ -6,6 +6,7 @@ var HOSTPATH = '/vitalist/';
 /*Packages*/
 var express 	= require('express'),
 	url 		= require('url'),
+	path 		= require('path'),
 	bodyParser 	= require('body-parser'),
 	fs 			= require('fs'),
 	util 		= require('util'),
@@ -32,7 +33,7 @@ var host = express();
 var app 	= express.Router();
 	app.use(function(req){
 		console.log(clc.white('[Client]') + '> ' + clc.green('call on ') + req.url, 'at ' + clc.blue(new Date()));
-		express.static(__dirname).apply(null,arguments);
+		express.static(path.join(__dirname, '..', '/public')).apply(null,arguments);
 	});
 
 //-----------------------------------------
@@ -83,7 +84,8 @@ server.get('/get',function (req,res) {
 host.use(HOSTPATH,app);
 host.use(HOSTPATH+'db',server);
 host.use(function(req,res){
-	res.redirect(HOSTPATH);
+	// console.log('Redirecting', req.url, 'to', HOSTPATH)
+	// res.redirect(HOSTPATH);
 	//res.status(404).send('Forbidden Area, You are simply no allowed here!')
 })
 
