@@ -8,7 +8,7 @@ module.exports = function (id, change, callback) {
 						data[id][k] = change[k];
 					}
 				});
-				console.log(id,data[id].index);
+				log.database(id,data[id].index);
 				require('./updateList')(data,function(err){
 					callback(err,data);
 				})

@@ -3,6 +3,7 @@
   "dependencies": {
     "d3": "^3.5.16",
     "bootstrap": "^3.3.6",
-    "d3-jetpack": "*"
+    "d3-jetpack": "*",
+    "socket.io": "^2.0.3"
   }
 }

@@ -18,11 +18,11 @@ module.exports = function (entry,callback) {
 			}).forEach(function(id){
 				ndata[id] = data[id];
 			});
-			require('./updateList')(ndata,function(err){
-				callback(err,ndata);
+			require('./updateList')(ndata,function(error){
+				callback(error,ndata);
 			})
 		} 	else 	{
-			throw "CONNERR: Could not get list";
+			callback(err,null)
 		}
 	})
 }

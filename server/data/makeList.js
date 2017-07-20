@@ -1,7 +1,7 @@
 var fs 		= require('fs');
 
 module.exports = function(callback) {
-	console.log("getting `csv`...");
+	log.database("getting `csv`...");
 	var fdata = {};
 	var data = fs.readFileSync('./data/list.csv','utf8')
 		.split('\r').map(function(d,i) {
@@ -14,11 +14,11 @@ module.exports = function(callback) {
 			};
 		});
 
-	console.log('writing `json`...');
+	log.database('writing `json`...');
 	fs.writeFile('./data/list.json',JSON.stringify(fdata),function(err){
 		if(!err)	{
 			callback(null, fdata);
-			console.log('Succesfully recreated list.');
+			log.database('Succesfully recreated list.');
 		}	else 	{
 			callback(true);
 			console.error('Failed at recreating list.');
