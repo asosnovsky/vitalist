@@ -10,25 +10,32 @@ function addTodo(newTodo) {
 	socket.emit('add', newTodo)
 }
 
+function deleteTodo(id) {
+	socket.emit('remove', id)
+}
+
 function refresh(dtlist) {
-	currentData = dtlist;
+	currentData = dtlist.filter( row => !row.deleted ) ;
 	$('.edit-team').hide();$('#add-btn').show();
 	refreshTable(d3.select('#table-undone'),{
-		main: dtlist.filter(function(d){return !d.done}),
+		main: currentData.filter(function(d){return !d.done}),
 		sub	: function(d){
-			return ['<span class="list-item">' + d.text + '</span>','<span class="mark-btn" done-status="'+d.done+'"><i class="checker glyphicon glyphicon-unchecked"></i></span>'];
+			return [
+				'<span class="list-item">' + d.text + '</span>',
+				'<span class="mark-btn" done-status="'+d.done+'"><i class="checker glyphicon glyphicon-unchecked"></i></span>'
+			];
 		},
 		status: true
 	});
 	refreshTable(d3.select('#table-done'),{
-		main: dtlist.filter(function(d){return d.done}),
+		main: currentData.filter(function(d){return d.done}),
 		sub	: function(d){
 			return ['<span class="list-item">' + d.text + '</span>','<span class="mark-btn" done-status="'+d.done+'"><i class="checker glyphicon glyphicon-check"></i></span>'];
 		},
 		status: false
 	});
-	var nDone = dtlist.filter(function(d){return d.done}).length;
-	var nTodo = dtlist.filter(function(d){return !d.done}).length;
+	var nDone = currentData.filter(function(d){return d.done}).length;
+	var nTodo = currentData.filter(function(d){return !d.done}).length;
 	$('#D-list-title').html('Done List <span class="badge badge-lg">' + (nDone) + '</span>');
 	$('#U-list-title').html('To do List <span class="badge badge-lg">' + (nTodo) + '</span>');
 
@@ -125,17 +132,17 @@ function refreshTable(table, opt) {
 		$('.edit-team').show();
 		$('#add-btn').hide();
 
-		d3.select('#edit-btn').attr('elem-id',d3.select(this).attr('id'))
-		.attr('elem-index',d3.select(this).attr("loc"))
+		d3.select('#edit-btn').attr('elem-id',d3.select(this.parentElement).attr('id'))
+		.attr('elem-index',d3.select(this.parentElement).attr("loc"))
 		.attr('elem-not-done',opt.status);
 
 		d3.select('#up-btn')
-		.attr('elem-id',(this.previousSibling?d3.select(this.previousSibling).attr("id"):"NA"))
-		.attr('elem-index',(this.previousSibling?d3.select(this.previousSibling).attr("loc"):"NA"));
+		.attr('elem-id',(this.parentElement.previousSibling?d3.select(this.parentElement.previousSibling).attr("id"):"NA"))
+		.attr('elem-index',(this.parentElement.previousSibling?d3.select(this.parentElement.previousSibling).attr("loc"):"NA"));
 
 		d3.select('#dn-btn')
-		.attr('elem-id',(this.nextSibling?d3.select(this.nextSibling).attr("id"):"NA"))
-		.attr('elem-index',(this.nextSibling?d3.select(this.nextSibling).attr("loc"):"NA"));
+		.attr('elem-id',(this.parentElement.nextSibling?d3.select(this.parentElement.nextSibling).attr("id"):"NA"))
+		.attr('elem-index',(this.parentElement.nextSibling?d3.select(this.parentElement.nextSibling).attr("loc"):"NA"));
 		$('#input-text').val(d3.select(this).select('.list-item').text())
 
 	})	
@@ -195,7 +202,11 @@ $('#add-btn').on('click',function(){
 		alert("Shmopster, you gotta write something for us to do!");
 	}
 });
-
+$('#remove-btn').on('click', function(){
+	deleteTodo(
+		$('#edit-btn').attr('elem-id')
+	)
+})
 $('#refresh-btn').on('click',function(){
 	$('.edit-team').hide();
 	$('#add-btn').show();

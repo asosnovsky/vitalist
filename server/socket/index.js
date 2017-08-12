@@ -43,5 +43,17 @@ module.exports = (expressApp) => {
 				}
 			})
 		})
+		socket.on('remove', (rowId) => {
+			log.socket('recieving `remove`', rowId)
+			db.remove(rowId, (error, data) => {
+				if(error) {
+					log.socket('emitting error due to `remove`', {error, rowId})
+					io.emit('error', error)
+				}else{
+					log.socket('emitting data due to `remove`', rowId)
+					io.emit('data', toArray(data))
+				}
+			})
+		})
 	});
 }
