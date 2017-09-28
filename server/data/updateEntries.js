@@ -1,3 +1,4 @@
+const allowedFields = ['text','done','index','hide','rating'];
 module.exports = function(changes, callback) {
 	var errs = {};
 	var errsHappened = false;
@@ -12,7 +13,7 @@ module.exports = function(changes, callback) {
 			Object.keys(changes).forEach(function(id,index){
 				if(data[id])	{
 					log.database(`[${tId}] Updating row ${id}`, JSON.stringify(data[id]))
-					Object.keys(data[id]).forEach(function(k){
+					allowedFields.forEach(function(k){
 						if(changes[id][k]!== undefined) {
 							log.database(`[${tId}] Updating row ${id} ${k} ${changes[id][k]}`)
 							if(k==='done') { 

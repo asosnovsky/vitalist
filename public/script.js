@@ -20,9 +20,15 @@ function refresh(dtlist) {
 	refreshTable(d3.select('#table-undone'),{
 		main: currentData.filter(function(d){return !d.done}),
 		sub	: function(d){
+			var rating = d.rating || 0;
 			return [
-				'<span class="list-item">' + d.text + '</span>',
-				'<span class="mark-btn" done-status="'+d.done+'"><i class="checker glyphicon glyphicon-unchecked"></i></span>'
+				`<span class="list-item">${d.text}</span>`,
+				`${[...Array(5).keys()].map(i =>`
+					<i class="glyphicon glyphicon-${ i <= rating ? 'star' : 'star-empty' } rating-score" rating="${i}"></i>
+				`).join('')}`,
+				`<span class="mark-btn" done-status="${d.done}">
+					<i class="checker glyphicon glyphicon-unchecked"></i>
+				</span>`
 			];
 		},
 		status: true
@@ -30,7 +36,14 @@ function refresh(dtlist) {
 	refreshTable(d3.select('#table-done'),{
 		main: currentData.filter(function(d){return d.done}),
 		sub	: function(d){
-			return ['<span class="list-item">' + d.text + '</span>','<span class="mark-btn" done-status="'+d.done+'"><i class="checker glyphicon glyphicon-check"></i></span>'];
+			var rating = d.rating || 0;
+			return [
+				'<span class="list-item is-done">' + d.text + '</span>',
+				`${[...Array(5).keys()].map(i =>`
+					<i class="glyphicon glyphicon-${ i <= rating ? 'star' : 'star-empty' } rating-score" rating="${i}"></i>
+				`).join('')}`,
+				'<span class="mark-btn" done-status="'+d.done+'"><i class="checker glyphicon glyphicon-check"></i></span>'
+			];
 		},
 		status: false
 	});
@@ -43,6 +56,7 @@ function refresh(dtlist) {
 		var elm = d3.select(this);
 		var id = this.parentElement.parentElement.id;
 		var status = !(elm.attr("done-status")==="true");
+		
 		console.log({
 		[id] : {
 				done:status
@@ -60,7 +74,7 @@ function refreshTable(table, opt) {
 	var rows 	= table.selectAll('tr')
 	.classed('active',false)
 	.style("font-weight","initial")
-	.style("text-decoration",opt.status?"none":"line-through")
+	// .style("text-decoration",opt.status?"none":"line-through")
 	.data(opt.main)
 	.attr('id',function(d){
 		return d.id;
@@ -85,7 +99,7 @@ function refreshTable(table, opt) {
 	.remove();
 
 	rows.enter().append('tr')
-	.style("text-decoration",opt.status?"none":"line-through")
+	// .style("text-decoration",opt.status?"none":"line-through")
 	.attr('class','list-item-tr')
 	.attr('id',function(d){
 		return d.id;
@@ -111,12 +125,36 @@ function refreshTable(table, opt) {
 	// .on('click',)
 	.style('cursor','pointer');
 
-	d3.selectAll('td').attr('class',(elem) => {
+	d3.selectAll('td').attr('class',(elem, index) => {
 		if($(elem).hasClass('list-item')) {
 			return 'is-row-head';
-		}else{
+		}else if($(elem).hasClass('mark-btn')){
 			return 'is-check-mark-head';
 		}
+	})
+
+	d3.selectAll('.rating-score').on('click', function(){
+		update({
+			[$(this).parent().parent().attr('id')] : {
+				rating: $(this).attr('rating')
+			}
+		})
+	})
+
+	d3.selectAll('.rating-score.glyphicon-star').on('mouseover', function(){
+		$(this).removeClass('glyphicon-star').addClass('glyphicon-star-empty')
+	})
+
+	d3.selectAll('.rating-score.glyphicon-star').on('mouseleave', function(){
+		$(this).addClass('glyphicon-star').removeClass('glyphicon-star-empty')
+	})
+
+	d3.selectAll('.rating-score.glyphicon-star-empty').on('mouseleave', function(){
+		$(this).removeClass('glyphicon-star').addClass('glyphicon-star-empty')
+	})
+
+	d3.selectAll('.rating-score.glyphicon-star-empty').on('mouseenter', function(){
+		$(this).addClass('glyphicon-star').removeClass('glyphicon-star-empty')
 	})
 
 	d3.selectAll('.is-row-head').on('click',function(){
@@ -151,29 +189,31 @@ function refreshTable(table, opt) {
 	.attr('class', 'exit')
 	.remove();
 	$('#input-text').val('');
+	
 };
 
 socket.on('data', refresh);
 
 
 $('#edit-btn').on('click',function(){
+	console.log($('#edit-btn').attr("elem-id"))
 	update({
-		[$(this).attr("elem-id")] : {
-			text: $('#input-text').val()
+		[$('#edit-btn').attr("elem-id")] : {
+			text: $('#input-text').val().trim()
 		}
 	});
 });
 
 $('#up-btn').on('click',function(){
-	if($(this).attr('elem-id') === "NA")	{
+	if($('#up-btn').attr('elem-id') === "NA")	{
 		alert("Already at the top!");
 	}	else 	{
 		update({
-			[$(this).attr('elem-id')] : {
+			[$('#up-btn').attr('elem-id')] : {
 				index: $('#edit-btn').attr('elem-index')
 			},
 			[$('#edit-btn').attr('elem-id')] : {
-				index: $(this).attr('elem-index')
+				index: $('#up-btn').attr('elem-index')
 			}
 		});
 	}
@@ -193,6 +233,7 @@ $('#dn-btn').on('click',function(){
 		});
 	}
 });
+
 $('#add-btn').on('click',function(){
 	if($('#input-text').val() !== '') 	{
 		addTodo(
@@ -202,13 +243,45 @@ $('#add-btn').on('click',function(){
 		alert("Shmopster, you gotta write something for us to do!");
 	}
 });
+
 $('#remove-btn').on('click', function(){
 	deleteTodo(
 		$('#edit-btn').attr('elem-id')
 	)
 })
+
 $('#refresh-btn').on('click',function(){
 	$('.edit-team').hide();
 	$('#add-btn').show();
 	refresh(currentData)
 });
+
+$('#input-text').keypress(function(e){
+	if(e.which === 13) {
+		if(!$('#edit-btn').css('display') || $('#edit-btn').css('display') === 'none'){
+			$('#add-btn').trigger('click')
+		}else{
+			$('#edit-btn').trigger('click')
+		}
+	}
+})
+
+
+// var span = $(".modal .close");
+
+
+// btn.onclick = function() {
+//     modal.style.display = "block";
+// }
+
+// // When the user clicks on <span> (x), close the modal
+// span.onclick = function() {
+//     modal.style.display = "none";
+// }
+
+// // When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//     if (event.target == modal) {
+//         modal.style.display = "none";
+//     }
+// }

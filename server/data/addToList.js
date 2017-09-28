@@ -10,7 +10,8 @@ module.exports = function (entry,callback) {
 				id 	 : id,
 				text :entry,
 				date_added: Date.now(),
-				done :false
+				done :false,
+				rating: 0
 			};
 			var ndata = {};
 			Object.keys(data).sort(function(a,b){
