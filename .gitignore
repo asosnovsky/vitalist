@@ -5,3 +5,4 @@ config.js
 *.log
 server/logs/*
 public/vendors
+server/data/list.json
