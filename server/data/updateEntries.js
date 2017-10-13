@@ -19,7 +19,7 @@ module.exports = function(changes, callback) {
 							if(k==='done') { 
 								changes[id][k] = (changes[id][k] === 'true' || changes[id][k] === true);
 								if(changes[id][k]) {
-									changes[id].time_done = Date.now();
+									data[id].time_done = Date.now();
 								}
 							}
 							log.database(`[${tId}] Updating row ${id} ${k}; ${data[id][k]} is set to ${changes[id][k]}`)

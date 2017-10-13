@@ -2,6 +2,7 @@
 var socket = io();
 var currentData;
 
+// Wrappers for  socket events
 function update(changes) {
 	socket.emit('update', changes)
 }
@@ -14,6 +15,7 @@ function deleteTodo(id) {
 	socket.emit('remove', id)
 }
 
+// Table Draws
 function refresh(dtlist) {
 	currentData = dtlist.filter( row => !row.deleted ) ;
 	$('.edit-team').hide();$('#add-btn').show();
@@ -22,7 +24,9 @@ function refresh(dtlist) {
 		sub	: function(d){
 			var rating = d.rating || 0;
 			return [
-				`<span class="list-item">${d.text}</span>`,
+				`
+				<span class="list-item">${d.text}</span>
+				`,
 				`${[...Array(5).keys()].map(i =>`
 					<i class="glyphicon glyphicon-${ i <= rating ? 'star' : 'star-empty' } rating-score" rating="${i}"></i>
 				`).join('')}`,
@@ -38,7 +42,10 @@ function refresh(dtlist) {
 		sub	: function(d){
 			var rating = d.rating || 0;
 			return [
-				'<span class="list-item is-done">' + d.text + '</span>',
+				`
+				<span class="list-item is-done">${d.text}</span><br/>
+				<p class="list-item date">${moment(d.time_done ? d.time_done : d.last_change).format('MMM-DD/YY')}</p>
+				`,
 				`${[...Array(5).keys()].map(i =>`
 					<i class="glyphicon glyphicon-${ i <= rating ? 'star' : 'star-empty' } rating-score" rating="${i}"></i>
 				`).join('')}`,
@@ -192,9 +199,10 @@ function refreshTable(table, opt) {
 	
 };
 
+// Listen to data incoming
 socket.on('data', refresh);
 
-
+// Btn calls
 $('#edit-btn').on('click',function(){
 	console.log($('#edit-btn').attr("elem-id"))
 	update({
