@@ -3,4 +3,6 @@ bower_components
 node_modules
 config.js
 *.log
-logs/*
+server/logs/*
+public/vendors
+server/data/list.json

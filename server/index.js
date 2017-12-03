@@ -1,4 +1,4 @@
-var HOSTPATH = '/vitalist/';
+var HOSTPATH = '/';
 //-----------------------------------------
 //	Requirements
 //-----------------------------------------
@@ -6,6 +6,7 @@ var HOSTPATH = '/vitalist/';
 /*Packages*/
 var express 	= require('express'),
 	url 		= require('url'),
+	path 		= require('path'),
 	bodyParser 	= require('body-parser'),
 	fs 			= require('fs'),
 	util 		= require('util'),
@@ -17,9 +18,16 @@ console.log = function() {
   log_file.write(util.format.apply(null, arguments) + '\n');
   process.stdout.write(util.format.apply(null,arguments) + '\n');
 };
+console.log(Object.keys(clc))
+const log = global.log = {
+	server: (...args) => console.log(clc.blue('[' + new Date() +']'), clc.cyan('[Server]') + '> ', ...args),
+	client: (...args) => console.log(clc.blue('[' + new Date() +']'), clc.xterm(43)('[Client]') + '> ', ...args),
+	socket: (...args) => console.log(clc.blue('[' + new Date() +']'), clc.green('[Socket]') + '> ', ...args),
+	database: (...args) => console.log(clc.blue('[' + new Date() +']'), clc.magenta('[Database]') + '> ', ...args),
+}
 
 /*Modules*/
-var db 	= require('./data');
+var db 		= require('./data');
 
 //-----------------------------------------
 //	Host
@@ -31,8 +39,8 @@ var host = express();
 //-----------------------------------------
 var app 	= express.Router();
 	app.use(function(req){
-		console.log(clc.white('[Client]') + '> ' + clc.green('call on ') + req.url, 'at ' + clc.blue(new Date()));
-		express.static(__dirname).apply(null,arguments);
+		log.client(clc.green('call on ') + req.url);
+		express.static(path.join(__dirname, '..', '/public')).apply(null,arguments);
 	});
 
 //-----------------------------------------
@@ -46,27 +54,29 @@ function resHandler(res, exterr) {
 	res.header('Access-Control-Allow-Origin','*');
 	res.header('Access-Control-Allow-Methods', 'GET,POST');
 	res.header('Access-Control-Allow-Headers', 'Content-Type');
-	console.log(clc.cyan('[Server]') + '> ' + clc.green('call on ') + res.req.url);
-	console.log(clc.blue('  Params  : ') + JSON.stringify(res.req.body))
+	log.server(clc.green('call on ') + res.req.url);
+	log.server(clc.blue('  Params  : ') + JSON.stringify(res.req.body));
 	return function(err,data){
 		if(err) console.log(clc.blue('  Error   : ') + JSON.stringify(err));
 		if(err && !data){
 			res.status(400).send(err);
 		}	else if(err)	{
-			console.log(clc.blue('  Returned: ') + Object.keys(data).length + ' items');
+			log.server(clc.blue('  Returned: ') + Object.keys(data).length + ' items');
 			res.status(202).json({err:err,data:Object.keys(data).map(function(k){return data[k]})});
 		}	else if(exterr) {
 			res.status(exterr.status).send(exterr.err)
 		}	else	{
-			console.log(clc.blue('  Returned: ') + Object.keys(data).length + ' items');
+			log.server(clc.blue('  Returned: ') + Object.keys(data).length + ' items');
 			res.status(200).json({err:err,data:Object.keys(data).map(function(k){return data[k]})});
 		}
 	};
 }
 
-server.get('/get',function (req,res) {
+server
+.get('/get',function (req,res) {
 	db.get(resHandler(res));
-}).post('/add',function (req,res) {
+})
+.post('/add',function (req,res) {
 	if(req.body.entry && req.body.entry.constructor === String)	{
 		db.add(req.body.entry,resHandler(res));
 	} 	else 	{
@@ -82,10 +92,11 @@ server.get('/get',function (req,res) {
 
 host.use(HOSTPATH,app);
 host.use(HOSTPATH+'db',server);
-host.use(function(req,res){
-	res.redirect(HOSTPATH);
-	//res.status(404).send('Forbidden Area, You are simply no allowed here!')
-})
+// host.use(function(req,res){
+// 	// console.log('Redirecting', req.url, 'to', HOSTPATH)
+// 	// res.redirect(HOSTPATH);
+// 	res.status(404).send('Forbidden Area, You are simply no allowed here!')
+// })
 
 var PORT = null,
 	HOST = null;
@@ -96,6 +107,12 @@ if(!require('./config.js')) {
 	HOST = require('./config.js').HOST || null;
 }
 
-var HOST = host.listen(PORT, HOST,function(){
-	console.log('Server running on http://%s:%s',HOST.address().address,HOST.address().port);
+var HOSTED = host.listen(PORT, HOST,function(){
+	log.server('Server running on http://%s:%s',HOSTED.address().address,HOSTED.address().port);
 });
+
+
+//-----------------------------------------
+//	Socket Config
+//-----------------------------------------
+var socket 	= require('./socket')(HOSTED);

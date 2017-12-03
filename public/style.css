@@ -1,0 +1,94 @@
+/*@media screen and (device-width: 768px) {*/
+    body {
+        font-size: 6em;
+    }
+    
+    .up-table {
+        max-height: 600px;
+        overflow-y: scroll;
+    }
+
+    .up-table.max-height {
+        max-height: 100%;
+    }
+    
+    .btn-lg {
+        padding: 15px 24px;
+        font-size: 27px;
+        line-height: 2;
+        border-radius: 9px;
+    }
+    
+    .input-lg {
+        height: 87px;
+        padding: 15px 24px;
+        font-size: 27px;
+        line-height: 2;
+        border-radius: 9px;
+    }
+    
+    .badge-lg {
+        padding: 4.5px 10.5px;
+        font-size: 18px;
+        border-radius: 15px;
+    }
+    /*}*/
+    
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    
+    /* Modal Content/Box */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+    }
+    
+    /* The Close Button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .list-item.is-done {
+        text-decoration: line-through
+    }
+    .list-item.date {
+        font-size: 0.65em;
+    }
+
+
+.input-lg {
+    font-size: 50px;
+}
+
+@media (min-width: 768px) {        
+    .col-sm-offset-half {
+        margin-left: 4.15555%;
+    }
+}
+
+.col-xs-offset-half {
+    margin-left: 4.15555%;
+}
